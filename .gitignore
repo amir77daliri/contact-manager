@@ -150,6 +150,8 @@ pip-selfcheck.json
 # dependencies
 /node_modules
 /.pnp
+/Frontend-Reactmy-app/node_modules
+Frontend-React/my-app/node_modules
 .pnp.js
 /server/node_modules
 # testing
