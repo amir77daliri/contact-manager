@@ -15,6 +15,9 @@ const App = () => {
         >
           Learn React
         </a>
+        <button className="btn btn-success">تست بوت استرپ</button>
+        <span className="fa fa-user">
+        </span>
       </header>
     </div>
   );
