@@ -6,7 +6,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('', ContactsListApi.as_view()),
-    path('add', CreateContactApi.as_view()),
-    path('groups', GroupListApi.as_view()),
+    path('contacts/', ContactsListApi.as_view()),
+    path('add-contact/', CreateContactApi.as_view()),
+    path('groups/', GroupListApi.as_view()),
 ]
