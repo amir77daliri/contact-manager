@@ -1,6 +1,6 @@
 import { CURRENTLINE, CYAN, ORANGE, PURPLE, RED } from "../../utils/colors";
 
-const Contact = () => {
+const Contact = ({contact}) => {
   return (
     <div className="col-md-6">
       <div style={{ backgroundColor: CURRENTLINE }} className="card my-2">
@@ -8,10 +8,10 @@ const Contact = () => {
           <div className="row align-items-center d-flex justify-content-around">
             <div className="col-md-4 col-sm-4">
               <img
-                src="https://via.placeholder.com/200"
+                src={contact.photo}
                 alt=""
-                style={{ border: `1px solid ${PURPLE}` }}
-                className="img-fluid rounded"
+                style={{ border: `1px solid ${PURPLE}`, width: 200, height: 200 }}
+                className="img-fluid rounded "
               />
             </div>
             <div className="col-md-7 col-sm-7">
@@ -19,21 +19,21 @@ const Contact = () => {
                 <li className="list-group-item list-group-item-dark">
                   نام و نام خانوداگی :{"  "}
                   <span className="fw-bold">
-                    یونس قربانی
+                     {contact.fullname}
                   </span>
                 </li>
 
                 <li className="list-group-item list-group-item-dark">
                   شماره موبایل :{"  "}
                   <span className="fw-bold">
-                    09350001122
+                    {contact.mobile}
                   </span>
                 </li>
 
                 <li className="list-group-item list-group-item-dark">
                   آدرس ایمیل :{"  "}
                   <span className="fw-bold">
-                    younes.gh@chmail.ir
+                    {contact.email}
                   </span>
                 </li>
               </ul>

@@ -6,15 +6,18 @@ import {CURRENTLINE, PINK, ORANGE} from "../../utils/colors";
 import Spinner from "../Spinner";
 
 
-const Contacts = ({contacts, loading, setContacts, setGroups}) => {
+const Contacts = ({contacts, loading, setContacts, setGroups, setLoading}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
-        const {data : contactsData} = await axios.get("http://localhost:8000/api/contacts")
-        const {data : groupsData} = await axios.get("http://localhost:8000/api/groups")
+        setLoading(true);
+        const {data : contactsData} = await axios.get("http://localhost:8000/api/contacts");
+        const {data : groupsData} = await axios.get("http://localhost:8000/api/groups");
+        setContacts(contactsData);
+        setGroups(groupsData);
+        setLoading(false)
       } catch (err) {
-        console.log('hello')
+        setLoading(false);
         console.log(err)
       }
     }
