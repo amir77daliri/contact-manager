@@ -10,6 +10,8 @@ const Contacts = ({contacts, loading, setContacts, setGroups}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const response = await axios.get("https://google.com")
+        console.log(response)
         const {data : contactsData} = await axios.get("http://localhost:8080/contacts")
         const {data : groupsData} = await axios.get("http://localhost:8080/contacts/groups")
         console.log(contactsData);
