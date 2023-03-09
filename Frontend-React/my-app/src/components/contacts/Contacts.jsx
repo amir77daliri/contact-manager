@@ -11,6 +11,7 @@ const Contacts = ({contacts, loading, setContacts, setGroups}) => {
     const fetchData = async () => {
       try {
         const {data : contactsData} = await axios.get("http://localhost:8080/contacts")
+        const {data : groupsData} = await axios.get("http://localhost:8080/contacts/groups")
         console.log(contactsData);
       } catch (err) {
         console.log('hello')
