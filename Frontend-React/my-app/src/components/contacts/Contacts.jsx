@@ -1,9 +1,25 @@
+import { useEffect } from "react";
+import axios from "axios";
+
 import Contact from "./Contact";
 import {CURRENTLINE, PINK, ORANGE} from "../../utils/colors";
 import Spinner from "../Spinner";
 
 
-const Contacts = ({contacts, loading}) => {
+const Contacts = ({contacts, loading, setContacts, setGroups}) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const {data : contactsData} = await axios.get("http://localhost:8080/contacts")
+        console.log(contactsData);
+      } catch (err) {
+        console.log('hello')
+        console.log(err)
+      }
+    }
+    fetchData();
+  }, [])
+
   return (
     <>
       <section className="container">

@@ -15,6 +15,7 @@ import './App.css';
 
 const App = () => {
     const [contacts, setContacts] = useState([]);
+    const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(false);
 
     return (
@@ -22,7 +23,7 @@ const App = () => {
             <Navbar />
             <Routes>
                 <Route path="/" element={<Navigate to="/contacts" />} />
-                <Route path="/contacts" element={<Contacts contacts={contacts} loading={loading} />} />
+                <Route path="/contacts" element={<Contacts contacts={contacts} loading={loading} setContacts={setContacts} setGroups={setGroups} />} />
                 <Route path="/contacts/add" element={<AddContact />} />
                 <Route path="/contacts/:contactId" element={<ViewContact />} />
                 <Route path="/contacts/edit/:contactId" element={<EditContact />} />
