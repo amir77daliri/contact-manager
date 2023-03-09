@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import axios from "axios";
-
+// Required Components :
 import Contact from "./Contact";
 import {CURRENTLINE, PINK, ORANGE} from "../../utils/colors";
 import Spinner from "../Spinner";
+// Utils && Services :
+import contactService from "../../services/myAppServices";
 
 
 const Contacts = ({contacts, loading, setContacts, setGroups, setLoading}) => {
@@ -11,8 +13,8 @@ const Contacts = ({contacts, loading, setContacts, setGroups, setLoading}) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const {data : contactsData} = await axios.get("http://localhost:8000/api/contacts");
-        const {data : groupsData} = await axios.get("http://localhost:8000/api/groups");
+        const {data : contactsData} = await contactService.getAllContacts()
+        const {data : groupsData} = await contactService.getAllGroups()
         setContacts(contactsData);
         setGroups(groupsData);
         setLoading(false)
