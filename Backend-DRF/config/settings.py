@@ -26,7 +26,7 @@ AUTH_USER_MODEL = 'Accounts.User'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['http://localhost:3000']
 
 
 # Application definition
