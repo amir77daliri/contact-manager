@@ -19,7 +19,6 @@ const App = () => {
     const [loading, setLoading] = useState(false);
     const [contact, setContact] = useState({
         fullname: "",
-        photo: "",
         mobile: "",
         email: "",
         job: "",

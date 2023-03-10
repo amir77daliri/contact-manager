@@ -1,20 +1,41 @@
+import {useState} from "react";
+
 import { Link } from "react-router-dom";
 import {Spinner} from "../index";
 import { COMMENT, GREEN, PURPLE } from "../../utils/colors";
 
+import contactService from "../../services/myAppServices";
 
 
 const AddContact = ({loading, groups, contact, setContact}) => {
-
+  const [image, setImage] = useState([])
   const setContactInfo = (event) => {
     setContact({
       ...contact, [event.target.name] : event.target.value
     })
   }
 
-  const createContactForm = (e) => {
+  const handleImageUpload = (e) => {
+    if(e.target.files) {
+      let file = e.target.files[0]
+      setImage(file)
+    }
+  }
+
+  const createContactForm = async (e) => {
     e.preventDefault();
-    console.log(contact)
+    let formData = new FormData()
+    formData.append('fullname', contact.fullname)
+    formData.append('email', contact.email)
+    formData.append('job', contact.job)
+    formData.append('photo', image)
+    formData.append('mobile', contact.mobile)
+    formData.append('group_id', contact.group)
+    try {
+      const response = await contactService.createNewContact(formData)
+    } catch (err)  {
+      console.log('hell', err)
+    }
   }
 
   return (
@@ -119,10 +140,7 @@ const AddContact = ({loading, groups, contact, setContact}) => {
                           name="photo"
                           type="file"
                           className="form-control"
-                          onChange={(e) => {
-                            console.log(e.target.files)
-
-                          }}
+                          onChange={handleImageUpload}
                       />
                       <label id="fileLabel" htmlFor="photo" className="form-control" style={{color: "green !important"}}>
                         انتخاب تصویر مخاطب

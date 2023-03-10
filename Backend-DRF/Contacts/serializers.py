@@ -18,18 +18,18 @@ class ContactsSerializer(serializers.ModelSerializer):
 
 
 class CreateContactSerializer(serializers.ModelSerializer):
-    group = serializers.IntegerField()
+    group = GroupSerializer(read_only=True)
+    group_id = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Contacts
         fields = '__all__'
 
     def create(self, validated_data):
-        group_id = validated_data.pop("group")
+        group_id = validated_data.pop("group_id")
         try:
-            group = Groups.objects.get(id=group_id)
-            contact = Contacts.objects.create(**validated_data, group=group)
-            print("hello")
+            group_instance = Groups.objects.get(id=group_id)
+            contact = Contacts.objects.create(**validated_data, group=group_instance)
             return contact
         except:
             raise serializers.ValidationError("گروه انتخاب شده اشتباه است.")
