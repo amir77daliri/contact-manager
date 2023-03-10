@@ -9,13 +9,14 @@ import contactService from "../../services/myAppServices";
 import {Link} from "react-router-dom";
 
 
-const Contacts = ({contacts, loading, setContacts, setLoading, confirmDelete}) => {
+const Contacts = ({contacts, loading, setContacts, setLoading, confirmDelete, setFilteredContacts}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const {data : contactsData} = await contactService.getAllContacts()
         setContacts(contactsData);
+        setFilteredContacts(contactsData)
         setLoading(false)
       } catch (err) {
         setLoading(false);
@@ -31,8 +32,8 @@ const Contacts = ({contacts, loading, setContacts, setLoading, confirmDelete}) =
         <div className="grid">
           <div className="row">
             <div className="col">
-              <p className="h3">
-                <Link to="/contacts/add" className="btn mx-2" style={{ backgroundColor: PINK }}>
+              <p className="h3 float-end">
+                <Link to="/contacts/add" className="btn m-2" style={{ backgroundColor: PINK }}>
                   ساخت مخاطب جدید
                   <i className="fa fa-plus-circle mx-2" />
                 </Link>

@@ -19,7 +19,9 @@ import './App.css';
 
 const App = () => {
     const [contacts, setContacts] = useState([]);
+    const [filteredContacts, setFilteredContacts] = useState([]);
     const [groups, setGroups] = useState([]);
+    const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate()
 
@@ -76,12 +78,20 @@ const App = () => {
         })
     }
 
+    const searchContacts = (event) => {
+        setQuery(event.target.value)
+        const MatchContacts = contacts.filter(contact => {
+            return contact.fullname.toLowerCase().includes(event.target.value.toLowerCase())
+        })
+        setFilteredContacts(MatchContacts)
+    }
+
     return (
         <div className="App">
-            <Navbar />
+            <Navbar query={query} searchContacts={searchContacts}/>
             <Routes>
                 <Route path="/" element={<Navigate to="/contacts" />} />
-                <Route path="/contacts" element={<Contacts contacts={contacts} loading={loading} setContacts={setContacts} setLoading={setLoading} confirmDelete={confirmDeleteAlert}/>} />
+                <Route path="/contacts" element={<Contacts contacts={filteredContacts} loading={loading} setFilteredContacts={setFilteredContacts} setContacts={setContacts} setLoading={setLoading} confirmDelete={confirmDeleteAlert}/>} />
                 <Route path="/contacts/add" element={<AddContact loading={loading} groups={groups} />} />
                 <Route path="/contacts/:contactId" element={<ViewContact loading={loading} setLoading={setLoading}/>} />
                 <Route path="/contacts/edit/:contactId" element={<EditContact loading={loading} setLoading={setLoading} groups={groups}/>} />

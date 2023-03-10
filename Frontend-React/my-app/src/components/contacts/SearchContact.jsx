@@ -1,6 +1,6 @@
 import {PURPLE} from "../../utils/colors";
 
-const SearchContact = () => {
+const SearchContact = ({query, searchContacts}) => {
 
     return (
         <div className="input-group mx-2 w-75" dir="ltr">
@@ -8,6 +8,8 @@ const SearchContact = () => {
                 <i className="fa fa-search" />
             </span>
             <input
+                value={query}
+                onChange={searchContacts}
                 type="text"
                 dir="rtl"
                 style={{borderColor: PURPLE}}
