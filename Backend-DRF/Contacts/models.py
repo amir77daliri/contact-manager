@@ -15,7 +15,7 @@ class Contacts(models.Model):
     mobile = models.CharField(max_length=11)
     email = models.EmailField()
     job = models.CharField(max_length=200)
-    group = models.OneToOneField(Groups, on_delete=models.CASCADE, related_name='contact')
+    group = models.ForeignKey(Groups, on_delete=models.CASCADE, related_name='contact')
 
     def __str__(self):
         return self.fullname

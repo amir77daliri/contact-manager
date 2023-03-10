@@ -22,3 +22,11 @@ input[type="email"]::-webkit-input-placeholder,
 input[type="number"]::-webkit-input-placeholder {
   color: #3bab76;
 }
+
+input[type="file"] {
+  display: none;
+}
+
+#fileLabel {
+  color: #ff5555 !important;
+}

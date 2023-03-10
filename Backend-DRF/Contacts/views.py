@@ -1,7 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from .models import Contacts, Groups
-from .serializers import ContactsSerializer, GroupSerializer
+from .serializers import ContactsSerializer, GroupSerializer, CreateContactSerializer
 
 
 class ContactsListApi(generics.ListAPIView):
@@ -22,4 +22,4 @@ class GroupListApi(generics.ListAPIView):
 
 class CreateContactApi(generics.CreateAPIView):
     queryset = Contacts.objects.all()
-    serializer_class = ContactsSerializer
+    serializer_class = CreateContactSerializer

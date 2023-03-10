@@ -6,6 +6,7 @@ import {CURRENTLINE, PINK, ORANGE} from "../../utils/colors";
 import Spinner from "../Spinner";
 // Utils && Services :
 import contactService from "../../services/myAppServices";
+import {Link} from "react-router-dom";
 
 
 const Contacts = ({contacts, loading, setContacts, setGroups, setLoading}) => {
@@ -33,10 +34,10 @@ const Contacts = ({contacts, loading, setContacts, setGroups, setLoading}) => {
           <div className="row">
             <div className="col">
               <p className="h3">
-                <button className="btn mx-2" style={{ backgroundColor: PINK }}>
+                <Link to="/contacts/add" className="btn mx-2" style={{ backgroundColor: PINK }}>
                   ساخت مخاطب جدید
                   <i className="fa fa-plus-circle mx-2" />
-                </button>
+                </Link>
               </p>
             </div>
           </div>
