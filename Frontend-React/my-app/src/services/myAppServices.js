@@ -24,6 +24,11 @@ class ContactsServices {
         return axios.get(url)
     }
 
+    updateContact = (contactId, formData) => {
+        const url = `${SERVER_URL}/contact/${contactId}/`
+        return axios.patch(url, formData)
+    }
+
 
 }
 

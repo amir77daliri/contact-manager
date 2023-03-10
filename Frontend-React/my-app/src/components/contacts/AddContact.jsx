@@ -6,11 +6,19 @@ import {Spinner} from "../index";
 import { COMMENT, GREEN, PURPLE } from "../../utils/colors";
 
 import contactService from "../../services/myAppServices";
+import formUpload from "../../utils/formUpload"
 
-
-const AddContact = ({loading, groups, contact, setContact}) => {
-  const [image, setImage] = useState(null)
+const AddContact = ({loading, groups}) => {
   const navigate = useNavigate()
+  const [image, setImage] = useState(null)
+  const [contact, setContact] = useState({
+        fullname: "",
+        mobile: "",
+        email: "",
+        job: "",
+        group: ""
+    })
+
 
   const setContactInfo = (event) => {
     setContact({
@@ -27,13 +35,7 @@ const AddContact = ({loading, groups, contact, setContact}) => {
 
   const createContactForm = async (e) => {
     e.preventDefault();
-    let formData = new FormData()
-    formData.append('fullname', contact.fullname)
-    formData.append('email', contact.email)
-    formData.append('job', contact.job)
-    formData.append('photo', image)
-    formData.append('mobile', contact.mobile)
-    formData.append('group_id', contact.group)
+    const formData = formUpload(contact, image)
     try {
       const response = await contactService.createNewContact(formData)
       if(response.status === 201) {
@@ -150,7 +152,7 @@ const AddContact = ({loading, groups, contact, setContact}) => {
                           className="form-control"
                           onChange={handleImageUpload}
                       />
-                      <label id="fileLabel" htmlFor="photo" className="form-control" style={{color: "green !important"}}>
+                      <label id="fileLabel" htmlFor="photo" className="form-control">
                         انتخاب تصویر مخاطب
                       </label>
                     </div>

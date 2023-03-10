@@ -9,15 +9,13 @@ import contactService from "../../services/myAppServices";
 import {Link} from "react-router-dom";
 
 
-const Contacts = ({contacts, loading, setContacts, setGroups, setLoading}) => {
+const Contacts = ({contacts, loading, setContacts, setLoading}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const {data : contactsData} = await contactService.getAllContacts()
-        const {data : groupsData} = await contactService.getAllGroups()
         setContacts(contactsData);
-        setGroups(groupsData);
         setLoading(false)
       } catch (err) {
         setLoading(false);
