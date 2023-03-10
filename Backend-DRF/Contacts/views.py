@@ -23,3 +23,8 @@ class GroupListApi(generics.ListAPIView):
 class CreateContactApi(generics.CreateAPIView):
     queryset = Contacts.objects.all()
     serializer_class = CreateContactSerializer
+
+
+class ContactRetrieveUpdateDestroyApi(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Contacts.objects.all()
+    serializer_class = CreateContactSerializer

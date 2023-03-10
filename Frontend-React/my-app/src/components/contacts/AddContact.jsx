@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 import { Link } from "react-router-dom";
 import {Spinner} from "../index";
@@ -8,7 +9,9 @@ import contactService from "../../services/myAppServices";
 
 
 const AddContact = ({loading, groups, contact, setContact}) => {
-  const [image, setImage] = useState([])
+  const [image, setImage] = useState(null)
+  const navigate = useNavigate()
+
   const setContactInfo = (event) => {
     setContact({
       ...contact, [event.target.name] : event.target.value
@@ -33,6 +36,11 @@ const AddContact = ({loading, groups, contact, setContact}) => {
     formData.append('group_id', contact.group)
     try {
       const response = await contactService.createNewContact(formData)
+      if(response.status === 201) {
+        setContact({})
+        setImage(null)
+        navigate('/contacts')
+      }
     } catch (err)  {
       console.log('hell', err)
     }

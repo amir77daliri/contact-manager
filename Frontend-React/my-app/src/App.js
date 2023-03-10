@@ -32,7 +32,7 @@ const App = () => {
                 <Route path="/" element={<Navigate to="/contacts" />} />
                 <Route path="/contacts" element={<Contacts contacts={contacts} loading={loading} setContacts={setContacts} setGroups={setGroups} setLoading={setLoading}/>} />
                 <Route path="/contacts/add" element={<AddContact loading={loading} groups={groups} contact={contact} setContact={setContact}/>} />
-                <Route path="/contacts/:contactId" element={<ViewContact />} />
+                <Route path="/contacts/:contactId" element={<ViewContact loading={loading} setLoading={setLoading} contact={contact} setContact={setContact}/>} />
                 <Route path="/contacts/edit/:contactId" element={<EditContact />} />
             </Routes>
         </div>
