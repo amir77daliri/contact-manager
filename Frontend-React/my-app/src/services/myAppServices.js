@@ -19,6 +19,12 @@ class ContactsServices {
         return axios.post(url, formData)
     }
 
+    getContact = (contactId) => {
+        const url = `${SERVER_URL}/contact/${contactId}`
+        return axios.get(url)
+    }
+
+
 }
 
 const contactService = new ContactsServices();
