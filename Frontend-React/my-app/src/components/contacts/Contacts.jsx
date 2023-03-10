@@ -9,7 +9,7 @@ import contactService from "../../services/myAppServices";
 import {Link} from "react-router-dom";
 
 
-const Contacts = ({contacts, loading, setContacts, setLoading}) => {
+const Contacts = ({contacts, loading, setContacts, setLoading, confirmDelete}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,7 +47,7 @@ const Contacts = ({contacts, loading, setContacts, setLoading}) => {
           {/* Contact */}
           {
             contacts.length > 0 ? contacts.map(contact => (
-                <Contact key={contact.id} contact={contact}/>
+                <Contact key={contact.id} contact={contact} confirmDelete={() => confirmDelete(contact.id) }/>
             )) : (
                 <div className="text-center py-5" style={{backgroundColor: CURRENTLINE}}>
                   <p className="h3" style={{color: ORANGE}}>

@@ -29,6 +29,10 @@ class ContactsServices {
         return axios.patch(url, formData)
     }
 
+    deleteContact = (contactId) => {
+        const url = `${SERVER_URL}/contact/${contactId}/`
+        return axios.delete(url)
+    }
 
 }
 
