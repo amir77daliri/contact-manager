@@ -1,3 +1,8 @@
+/*
+    use FormData to send multipart form
+    add contact image to Form
+ */
+
 const formUpload = (contact, image=null) => {
     let formData = new FormData()
     formData.append('fullname', contact.fullname)

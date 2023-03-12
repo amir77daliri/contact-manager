@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+// use context :
+import {useContext} from "react";
+import ContactContext from "../../context/contactContext";
 
 import {Spinner} from "../index";
 import { CURRENTLINE, CYAN, PURPLE } from "../../utils/colors";
@@ -7,7 +10,8 @@ import { CURRENTLINE, CYAN, PURPLE } from "../../utils/colors";
 import contactService from "../../services/myAppServices";
 
 
-const ViewContact = ({loading, setLoading}) => {
+const ViewContact = () => {
+    const {loading, setLoading} = useContext(ContactContext)
     const { contactId } = useParams()
     const [contact, setContact] = useState({})
 

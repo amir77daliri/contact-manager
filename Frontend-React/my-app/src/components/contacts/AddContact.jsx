@@ -14,7 +14,7 @@ import formUpload from "../../utils/formUpload"
 const AddContact = () => {
     const navigate = useNavigate()
     const [image, setImage] = useState(null)
-    const {contact, setContact, loading, setLoading, groups} = useContext(ContactContext)
+    const {contact, setContact, contacts, setContacts, setFilteredContacts, loading, setLoading, groups} = useContext(ContactContext)
 
 
     const setContactInfo = (event) => {
@@ -31,156 +31,161 @@ const AddContact = () => {
     }
 
     const createContactForm = async (e) => {
-      e.preventDefault();
-      const formData = formUpload(contact, image)
-      try {
-          setLoading(true)
-          const response = await contactService.createNewContact(formData)
-          if(response.status === 201) {
-              setContact({})
-              setImage(null)
-              setLoading(false)
-              navigate('/contacts')
+        e.preventDefault();
+        const formData = formUpload(contact, image)
+        try {
+            setLoading(true)
+            const {data, status} = await contactService.createNewContact(formData)
+
+            if(status === 201) {
+                const allContacts = [...contacts, data]
+                // setContacts(allContacts)
+                setFilteredContacts(allContacts)
+                setContact({})
+                setImage(null)
+                setLoading(false)
+                navigate('/contacts')
+            }
+        } catch (err)  {
+            setLoading(false)
+            setContact({})
+            console.log('hell', err);
+            navigate('/contacts');
         }
-      } catch (err)  {
-          setLoading(false)
-        console.log('hell', err);
-        navigate('/contacts');
-      }
     }
 
-  return (
-    <>
-      {loading ? (
-        <Spinner />
-      ) : (
+    return (
         <>
-          <section className="p-3">
-            <img
-              src={require("../../assets/man-taking-note.png")}
-              height="400px"
-              alt="hello man"
-              style={{
-                position: "absolute",
-                zIndex: "-1",
-                top: "130px",
-                left: "100px",
-                opacity: "50%",
-              }}
-            />
-            <div className="container">
-              <div className="row">
-                <div className="col">
-                  <p
-                    className="h4 fw-bold text-center"
-                    style={{ color: GREEN }}
-                  >
-                    ساخت مخاطب جدید
-                  </p>
-                </div>
-              </div>
-              <hr style={{ backgroundColor: GREEN }} />
-              <div className="row mt-5">
-                <div className="col-md-4">
-                  <form onSubmit={createContactForm}>
-                    <div className="mb-2">
-                      <input
-                          id="fullname"
-                          name="fullname"
-                          type="text"
-                          value={contact.fullname}
-                          onChange={setContactInfo}
-                          onBlur=""
-                          className="form-control"
-                          placeholder="نام و نام خانوادگی"
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <input
-                          onChange={setContactInfo}
-                          id="mobile"
-                          name="mobile"
-                          type="number"
-                          value={contact.mobile}
-                          className="form-control"
-                          placeholder="شماره موبایل"
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <input
-                          onChange={setContactInfo}
-                          id="email"
-                          type="email"
-                          name="email"
-                          value={contact.email}
-                          className="form-control"
-                          placeholder="آدرس ایمیل"
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <input
-                          onChange={setContactInfo}
-                          id="job"
-                          type="text"
-                          name="job"
-                          value={contact.job}
-                          className="form-control"
-                          placeholder="شغل"
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <select
-                          onChange={setContactInfo}
-                          id="group"
-                          name="group"
-                          value={contact.group}
-                          className="form-control"
-                          >
-                      <option value="">انتخاب گروه</option>
-                        {groups.length > 0 &&
-                          groups.map((group) => (
-                            <option key={group.id} value={group.id}>
-                              {group.name}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-                    <div className="mb-2">
-                      <input
-                          id="photo"
-                          name="photo"
-                          type="file"
-                          className="form-control"
-                          onChange={handleImageUpload}
-                      />
-                      <label id="fileLabel" htmlFor="photo" className="form-control">
-                        انتخاب تصویر مخاطب
-                      </label>
-                    </div>
-                    <div className="mx-2">
-                      <input
-                        type="submit"
-                        className="btn"
-                        style={{ backgroundColor: PURPLE }}
-                        value="ساخت مخاطب"
-                      />
-                      <Link
-                        to={"/contacts"}
-                        className="btn mx-2"
-                        style={{ backgroundColor: COMMENT }}
+          {loading ? (
+            <Spinner />
+          ) : (
+            <>
+              <section className="p-3">
+                <img
+                  src={require("../../assets/man-taking-note.png")}
+                  height="400px"
+                  alt="hello man"
+                  style={{
+                    position: "absolute",
+                    zIndex: "-1",
+                    top: "130px",
+                    left: "100px",
+                    opacity: "50%",
+                  }}
+                />
+                <div className="container">
+                  <div className="row">
+                    <div className="col">
+                      <p
+                        className="h4 fw-bold text-center"
+                        style={{ color: GREEN }}
                       >
-                        انصراف
-                      </Link>
+                        ساخت مخاطب جدید
+                      </p>
                     </div>
-                  </form>
+                  </div>
+                  <hr style={{ backgroundColor: GREEN }} />
+                  <div className="row mt-5">
+                    <div className="col-md-4">
+                      <form onSubmit={createContactForm}>
+                        <div className="mb-2">
+                          <input
+                              id="fullname"
+                              name="fullname"
+                              type="text"
+                              value={contact.fullname}
+                              onChange={setContactInfo}
+                              onBlur=""
+                              className="form-control"
+                              placeholder="نام و نام خانوادگی"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <input
+                              onChange={setContactInfo}
+                              id="mobile"
+                              name="mobile"
+                              type="number"
+                              value={contact.mobile}
+                              className="form-control"
+                              placeholder="شماره موبایل"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <input
+                              onChange={setContactInfo}
+                              id="email"
+                              type="email"
+                              name="email"
+                              value={contact.email}
+                              className="form-control"
+                              placeholder="آدرس ایمیل"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <input
+                              onChange={setContactInfo}
+                              id="job"
+                              type="text"
+                              name="job"
+                              value={contact.job}
+                              className="form-control"
+                              placeholder="شغل"
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <select
+                              onChange={setContactInfo}
+                              id="group"
+                              name="group"
+                              value={contact.group}
+                              className="form-control"
+                              >
+                          <option value="">انتخاب گروه</option>
+                            {groups.length > 0 &&
+                              groups.map((group) => (
+                                <option key={group.id} value={group.id}>
+                                  {group.name}
+                                </option>
+                              ))}
+                          </select>
+                        </div>
+                        <div className="mb-2">
+                          <input
+                              id="photo"
+                              name="photo"
+                              type="file"
+                              className="form-control"
+                              onChange={handleImageUpload}
+                          />
+                          <label id="fileLabel" htmlFor="photo" className="form-control">
+                            انتخاب تصویر مخاطب
+                          </label>
+                        </div>
+                        <div className="mx-2">
+                          <input
+                            type="submit"
+                            className="btn"
+                            style={{ backgroundColor: PURPLE }}
+                            value="ساخت مخاطب"
+                          />
+                          <Link
+                            to={"/contacts"}
+                            className="btn mx-2"
+                            style={{ backgroundColor: COMMENT }}
+                          >
+                            انصراف
+                          </Link>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </section>
+              </section>
+            </>
+          )}
         </>
-      )}
-    </>
-  );
+    );
 };
 
 export default AddContact;

@@ -56,6 +56,7 @@ const App = () => {
             if(response) {
                 const {data : contactsData} = await contactService.getAllContacts()
                 setContacts(contactsData)
+                setFilteredContacts(contactsData)
                 setLoading(false)
             }
         } catch (err) {
@@ -104,6 +105,7 @@ const App = () => {
             setContact,
             contacts,
             filteredContacts,
+            setFilteredContacts,
             groups,
             query,
             searchContacts,
@@ -114,7 +116,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Navigate to="/contacts" />} />
                     <Route path="/contacts" element={<Contacts />} />
-                    <Route path="/contacts/add" element={<AddContact loading={loading} groups={groups} />} />
+                    <Route path="/contacts/add" element={<AddContact />} />
                     <Route path="/contacts/:contactId" element={<ViewContact />} />
                     <Route path="/contacts/edit/:contactId" element={<EditContact groups={groups}/>} />
                 </Routes>
