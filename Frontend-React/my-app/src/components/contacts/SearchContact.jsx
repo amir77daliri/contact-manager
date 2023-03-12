@@ -1,6 +1,11 @@
+// My context usage :
+import {useContext} from "react";
+import ContactContext from "../../context/contactContext";
+
 import {PURPLE} from "../../utils/colors";
 
-const SearchContact = ({query, searchContacts}) => {
+const SearchContact = () => {
+    const {query, searchContacts} = useContext(ContactContext);
 
     return (
         <div className="input-group mx-2 w-75" dir="ltr">

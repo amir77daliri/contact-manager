@@ -1,5 +1,8 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
+// My context usage :
+import {useContext} from "react";
+import ContactContext from "../../context/contactContext";
 
 import { Link } from "react-router-dom";
 import {Spinner} from "../index";
@@ -8,45 +11,43 @@ import { COMMENT, GREEN, PURPLE } from "../../utils/colors";
 import contactService from "../../services/myAppServices";
 import formUpload from "../../utils/formUpload"
 
-const AddContact = ({loading, groups}) => {
-  const navigate = useNavigate()
-  const [image, setImage] = useState(null)
-  const [contact, setContact] = useState({
-        fullname: "",
-        mobile: "",
-        email: "",
-        job: "",
-        group: ""
-    })
+const AddContact = () => {
+    const navigate = useNavigate()
+    const [image, setImage] = useState(null)
+    const {contact, setContact, loading, setLoading, groups} = useContext(ContactContext)
 
 
-  const setContactInfo = (event) => {
-    setContact({
-      ...contact, [event.target.name] : event.target.value
-    })
-  }
-
-  const handleImageUpload = (e) => {
-    if(e.target.files) {
-      let file = e.target.files[0]
-      setImage(file)
+    const setContactInfo = (event) => {
+      setContact({
+        ...contact, [event.target.name] : event.target.value
+      })
     }
-  }
 
-  const createContactForm = async (e) => {
-    e.preventDefault();
-    const formData = formUpload(contact, image)
-    try {
-      const response = await contactService.createNewContact(formData)
-      if(response.status === 201) {
-        setContact({})
-        setImage(null)
-        navigate('/contacts')
+    const handleImageUpload = (e) => {
+      if(e.target.files) {
+        let file = e.target.files[0]
+        setImage(file)
       }
-    } catch (err)  {
-      console.log('hell', err)
     }
-  }
+
+    const createContactForm = async (e) => {
+      e.preventDefault();
+      const formData = formUpload(contact, image)
+      try {
+          setLoading(true)
+          const response = await contactService.createNewContact(formData)
+          if(response.status === 201) {
+              setContact({})
+              setImage(null)
+              setLoading(false)
+              navigate('/contacts')
+        }
+      } catch (err)  {
+          setLoading(false)
+        console.log('hell', err);
+        navigate('/contacts');
+      }
+    }
 
   return (
     <>
