@@ -1,5 +1,7 @@
 import {useEffect, useState} from "react";
-import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+// use context :
+import ContactContext from "./context/contactContext";
 
 import contactService from "./services/myAppServices";
 import {confirmAlert} from "react-confirm-alert";
@@ -13,10 +15,11 @@ import {
     Navbar
 } from "./components/index"
 
-import './App.css';
+// packages :
+import _ from "lodash"
 
-// use context :
-import ContactContext from "./context/contactContext";
+// styles :
+import './App.css';
 
 
 const App = () => {
@@ -24,7 +27,6 @@ const App = () => {
     const [contacts, setContacts] = useState([]);
     const [filteredContacts, setFilteredContacts] = useState([]);
     const [groups, setGroups] = useState([]);
-    const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(false);
 
 
@@ -88,14 +90,12 @@ const App = () => {
         })
     }
 
-    const searchContacts = (event) => {
-        setQuery(event.target.value)
-
+    const searchContacts = _.debounce((searchValue) => {
         const MatchContacts = contacts.filter(contact => {
-            return contact.fullname.toLowerCase().includes(event.target.value.toLowerCase())
+            return contact.fullname.toLowerCase().includes(searchValue.toLowerCase())
         })
         setFilteredContacts(MatchContacts)
-    }
+    }, 1200);
 
     return (
         <ContactContext.Provider value={{
@@ -107,7 +107,6 @@ const App = () => {
             filteredContacts,
             setFilteredContacts,
             groups,
-            query,
             searchContacts,
             deleteContact: confirmDeleteAlert
         }}>

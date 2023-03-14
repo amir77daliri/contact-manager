@@ -5,7 +5,7 @@ import ContactContext from "../../context/contactContext";
 import {PURPLE} from "../../utils/colors";
 
 const SearchContact = () => {
-    const {query, searchContacts} = useContext(ContactContext);
+    const {searchContacts} = useContext(ContactContext);
 
     return (
         <div className="input-group mx-2 w-75" dir="ltr">
@@ -13,8 +13,7 @@ const SearchContact = () => {
                 <i className="fa fa-search" />
             </span>
             <input
-                value={query}
-                onChange={searchContacts}
+                onChange={(event) => searchContacts(event.target.value) }
                 type="text"
                 dir="rtl"
                 style={{borderColor: PURPLE}}

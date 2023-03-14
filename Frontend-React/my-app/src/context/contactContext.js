@@ -12,7 +12,6 @@ const ContactContext = createContext({
     setFilteredContacts: () => {},
     groups: [],
     deleteContact: () => {},
-    query: '',
     searchContacts : () => {},
 })
 
