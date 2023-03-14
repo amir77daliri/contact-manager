@@ -2,6 +2,13 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from .models import Contacts, Groups
 from .serializers import ContactsSerializer, GroupSerializer, CreateContactSerializer
+from rest_framework.pagination import PageNumberPagination
+
+
+class ContactPagination(PageNumberPagination):
+    page_size = 20
+    max_page_size = 100
+    page_size_query_param = 'page_size'
 
 
 class ContactsListApi(generics.ListAPIView):
@@ -10,6 +17,7 @@ class ContactsListApi(generics.ListAPIView):
     """
     queryset = Contacts.objects.all()
     serializer_class = ContactsSerializer
+    pagination_class = ContactPagination
 
 
 class GroupListApi(generics.ListAPIView):
