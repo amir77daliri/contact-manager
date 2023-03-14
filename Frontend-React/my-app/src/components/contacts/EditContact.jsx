@@ -10,12 +10,15 @@ import { Spinner } from "../";
 import { COMMENT, ORANGE, PURPLE } from "../../utils/colors";
 import contactService from "../../services/myAppServices";
 import formUpload from "../../utils/formUpload";
+import {BaseSchema} from "../../validations/contactValidation";
+// packages :
+import {Formik, Field, Form, ErrorMessage} from "formik"
 
 
 const EditContact = () => {
     const { contactId } = useParams();
     const navigate = useNavigate();
-    const {loading, setLoading, contact, setContact, groups, setFilteredContacts, contacts} = useContext(ContactContext)
+    const {loading, setLoading, contact, setContact, groups, setFilteredContacts, filteredContacts} = useContext(ContactContext);
 
     useEffect(() => {
         const fetchContact = async () => {
@@ -23,7 +26,6 @@ const EditContact = () => {
                 setLoading(true)
                 const {data : contactData} = await contactService.getContact(contactId)
                 setContact(contactData)
-                setContact({...contact, group: contact.group.id})
                 setLoading(false)
               } catch (err) {
                 setLoading(false)
@@ -33,22 +35,17 @@ const EditContact = () => {
         fetchContact();
         }, [])
 
-    const setContactInfo = (event) => {
 
-        setContact({...contact, [event.target.name]: event.target.value})
-    };
+    const submitUpdateForm = async (values) => {
 
-
-    const handleUpdateFormSubmit = async (e) => {
-        e.preventDefault()
-        const formData = await formUpload(contact)
+        const formData = await formUpload(values)
 
         try {
             setLoading(true)
             const {status, data} = await contactService.updateContact(contactId, formData)
             if(status === 200) {
                 // update contacts list :
-                let allContacts = [...contacts];
+                let allContacts = [...filteredContacts];
                 const contactIndex = allContacts.findIndex(c => c.id === parseInt(contactId));
                 allContacts[contactIndex] = {...data}
                 setFilteredContacts(allContacts);
@@ -66,125 +63,119 @@ const EditContact = () => {
     return (
         <>
         {loading ? (
-          <Spinner />
+            <Spinner />
         ) : (
-          <>
-            <section className="p-3">
-              <div className="container">
-                <div className="row my-2">
-                  <div className="col text-center">
-                    <p className="h4 fw-bold" style={{ color: ORANGE }}>
-                      ویرایش مخاطب
-                    </p>
-                  </div>
-                </div>
-                <hr style={{ backgroundColor: ORANGE }} />
-                <div
-                  className="row p-2 w-75 mx-auto align-items-center"
-                  style={{ backgroundColor: "#44475a", borderRadius: "1em" }}
-                >
-                  <div className="col-md-8">
-                    <form onSubmit={handleUpdateFormSubmit} >
-                      <div className="mb-2">
-                        <input
-                          name="fullname"
-                          type="text"
-                          className="form-control"
-                          value={contact.fullname}
-                          onChange={setContactInfo}
-                          required={true}
-                          placeholder="نام و نام خانوادگی"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <input
-                          name="mobile"
-                          type="number"
-                          className="form-control"
-                          value={contact.mobile}
-                          onChange={setContactInfo}
-                          required={true}
-                          placeholder="شماره موبایل"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <input
-                          name="email"
-                          type="email"
-                          className="form-control"
-                          value={contact.email}
-                          onChange={setContactInfo}
-                          required={true}
-                          placeholder="آدرس ایمیل"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <input
-                          name="job"
-                          type="text"
-                          className="form-control"
-                          value={contact.job}
-                          onChange={setContactInfo}
-                          required={true}
-                          placeholder="شغل"
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <select
-                          name="group"
-                          value={contact.group}
-                          onChange={setContactInfo}
-                          className="form-control"
-                          required={true}
-                        >
-                          <option value="">انتخاب گروه</option>
-                          {groups.length > 0 &&
-                            groups.map((group) => (
-                              <option key={group.id} value={group.id} >
-                                {group.name}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-                      <div className="mb-2">
-                        <input
-                          type="submit"
-                          className="btn"
-                          style={{ backgroundColor: PURPLE }}
-                          value="ویرایش مخاطب"
-                        />
-                        <Link
-                          to={"/contacts"}
-                          className="btn mx-2"
-                          style={{ backgroundColor: COMMENT }}
-                        >
-                          انصراف
-                        </Link>
-                      </div>
-                    </form>
-                  </div>
-                  <div className="col-md-4">
-                    <img
-                      src={contact.photo}
-                      className="img-fluid rounded"
-                      style={{ border: `1px solid ${PURPLE}` }}
-                    />
-                  </div>
-                </div>
-              </div>
+            <>
+                <section className="p-3">
+                    <div className="container">
+                        <div className="row my-2">
+                            <div className="col text-center">
+                                <p className="h4 fw-bold" style={{ color: ORANGE }}>
+                                    ویرایش مخاطب
+                                </p>
+                            </div>
+                        </div>
+                        <hr style={{ backgroundColor: ORANGE }} />
+                        <div className="row p-2 w-75 mx-auto align-items-center" style={{ backgroundColor: "#44475a", borderRadius: "1em" }}>
+                            <div className="col-md-8">
+                                <Formik
+                                    initialValues={{
+                                        fullname: contact.fullname,
+                                        mobile: contact.mobile,
+                                        email:contact.email,
+                                        job: contact.job,
+                                        group: contact.group?.id
+                                    }}
+                                    validationSchema={BaseSchema}
+                                    onSubmit={(values) => {
+                                        submitUpdateForm(values)
+                                    }}>
+                                    <Form>
+                                        <div className="mb-2">
+                                            <Field
+                                                name="fullname"
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="نام و نام خانوادگی"
+                                            />
+                                            <ErrorMessage name="fullname" render={msg => <div className="text-danger">{msg}</div>} />
+                                        </div>
+                                        <div className="mb-2">
+                                            <Field
+                                                name="mobile"
+                                                type="number"
+                                                className="form-control"
+                                                placeholder="شماره موبایل"
+                                            />
+                                            <ErrorMessage name="mobile" render={msg => <div className="text-danger">{msg}</div>} />
+                                        </div>
+                                        <div className="mb-2">
+                                            <Field
+                                                name="email"
+                                                type="email"
+                                                className="form-control"
+                                                placeholder="آدرس ایمیل"
+                                            />
+                                            <ErrorMessage name="email" render={msg => <div className="text-danger">{msg}</div>} />
+                                        </div>
+                                        <div className="mb-2">
+                                            <Field
+                                                name="job"
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="شغل"
+                                            />
+                                            <ErrorMessage name="job" render={msg => <div className="text-danger">{msg}</div>} />
+                                        </div>
+                                        <div className="mb-2">
+                                            <select
+                                                name="group"
+                                                className="form-control"
+                                            >
+                                                <option value="">انتخاب گروه</option>
+                                                {groups.length > 0 &&
+                                                groups.map((group) => (
+                                                    <option key={group.id} value={group.id} >
+                                                        {group.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <ErrorMessage name="group" render={msg => <div className="text-danger">{msg}</div>} />
+                                        </div>
+                                        <div className="mb-2">
+                                            <input
+                                                type="submit"
+                                                className="btn"
+                                                style={{ backgroundColor: PURPLE }}
+                                                value="ویرایش مخاطب"
+                                            />
+                                            <Link
+                                                to={"/contacts"}
+                                                className="btn mx-2"
+                                                style={{ backgroundColor: COMMENT }}
+                                            >
+                                                انصراف
+                                            </Link>
+                                        </div>
+                                    </Form>
+                                </Formik>
+                            </div>
+                            <div className="col-md-4">
+                                <img
+                                    src={contact.photo}
+                                    className="img-fluid rounded"
+                                    style={{ border: `1px solid ${PURPLE}` }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="text-center mt-1">
 
-              <div className="text-center mt-1">
-                <img
-                  src={require("../../assets/man-taking-note.png")}
-                  alt={contact.fullname}
-                  height="300px"
-                  style={{ opacity: "60%" }}
-                />
-              </div>
-            </section>
-          </>
+                    </div>
+                </section>
+            </>
         )}
-      </>
+        </>
     );
 };
 

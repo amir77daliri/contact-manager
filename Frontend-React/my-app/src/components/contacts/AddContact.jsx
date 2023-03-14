@@ -10,18 +10,29 @@ import { COMMENT, GREEN, PURPLE } from "../../utils/colors";
 
 import contactService from "../../services/myAppServices";
 import formUpload from "../../utils/formUpload"
+import {creatContactSchema} from "../../validations/contactValidation";
+// packages :
+import {useFormik} from "formik"
+
 
 const AddContact = () => {
     const navigate = useNavigate()
     const [image, setImage] = useState(null)
-    const {contact, setContact, contacts, setContacts, setFilteredContacts, loading, setLoading, groups} = useContext(ContactContext)
-
-
-    const setContactInfo = (event) => {
-      setContact({
-        ...contact, [event.target.name] : event.target.value
-      })
-    }
+    const {filteredContacts, setFilteredContacts, loading, setLoading, groups} = useContext(ContactContext)
+    const formik = useFormik({
+        initialValues: {
+            fullname: '',
+            mobile: '',
+            email: '',
+            job: '',
+            group: '',
+            photo: ''
+        },
+        validationSchema: creatContactSchema,
+        onSubmit: values => {
+            createContactForm(values)
+        },
+    })
 
     const handleImageUpload = (e) => {
       if(e.target.files) {
@@ -30,25 +41,22 @@ const AddContact = () => {
       }
     }
 
-    const createContactForm = async (e) => {
-        e.preventDefault();
-        const formData = formUpload(contact, image)
+    const createContactForm = async (values) => {
+
+        const formData = formUpload(values, image)
         try {
             setLoading(true)
             const {data, status} = await contactService.createNewContact(formData)
 
             if(status === 201) {
-                const allContacts = [...contacts, data]
-                // setContacts(allContacts)
+                const allContacts = [...filteredContacts, data]
                 setFilteredContacts(allContacts)
-                setContact({})
                 setImage(null)
                 setLoading(false)
                 navigate('/contacts')
             }
         } catch (err)  {
             setLoading(false)
-            setContact({})
             console.log('hell', err);
             navigate('/contacts');
         }
@@ -87,59 +95,57 @@ const AddContact = () => {
                   <hr style={{ backgroundColor: GREEN }} />
                   <div className="row mt-5">
                     <div className="col-md-4">
-                      <form onSubmit={createContactForm}>
+                      <form onSubmit={formik.handleSubmit}>
                         <div className="mb-2">
                           <input
                               id="fullname"
                               name="fullname"
                               type="text"
-                              value={contact.fullname}
-                              onChange={setContactInfo}
-                              onBlur=""
                               className="form-control"
                               placeholder="نام و نام خانوادگی"
+                              {...formik.getFieldProps('fullname')}
                           />
+                            {formik.touched.fullname && formik.errors.fullname ? (<div className="text-danger">{formik.errors.fullname}</div>) : null}
                         </div>
                         <div className="mb-2">
                           <input
-                              onChange={setContactInfo}
                               id="mobile"
                               name="mobile"
                               type="number"
-                              value={contact.mobile}
                               className="form-control"
                               placeholder="شماره موبایل"
+                              {...formik.getFieldProps('mobile')}
                           />
+                            {formik.touched.mobile && formik.errors.mobile ? (<div className="text-danger">{formik.errors.mobile}</div>) : null}
                         </div>
                         <div className="mb-2">
                           <input
-                              onChange={setContactInfo}
                               id="email"
                               type="email"
                               name="email"
-                              value={contact.email}
                               className="form-control"
                               placeholder="آدرس ایمیل"
+                              {...formik.getFieldProps('email')}
                           />
+                            {formik.touched.email && formik.errors.email ? (<div className="text-danger">{formik.errors.email}</div>) : null}
                         </div>
                         <div className="mb-2">
                           <input
-                              onChange={setContactInfo}
                               id="job"
                               type="text"
                               name="job"
-                              value={contact.job}
                               className="form-control"
                               placeholder="شغل"
+                              {...formik.getFieldProps('job')}
                           />
+                            {formik.touched.job && formik.errors.job ? (<div className="text-danger">{formik.errors.job}</div>) : null}
                         </div>
                         <div className="mb-2">
                           <select
-                              onChange={setContactInfo}
                               id="group"
                               name="group"
-                              value={contact.group}
                               className="form-control"
+                              {...formik.getFieldProps('group')}
                               >
                           <option value="">انتخاب گروه</option>
                             {groups.length > 0 &&
@@ -149,6 +155,7 @@ const AddContact = () => {
                                 </option>
                               ))}
                           </select>
+                            {formik.touched.group && formik.errors.group ? (<div className="text-danger">{formik.errors.group}</div>) : null}
                         </div>
                         <div className="mb-2">
                           <input
@@ -156,11 +163,16 @@ const AddContact = () => {
                               name="photo"
                               type="file"
                               className="form-control"
-                              onChange={handleImageUpload}
+                              onChange={(e) => {
+                                  handleImageUpload(e);
+                                  formik.handleChange(e)
+                              }}
+                              onBlur={formik.handleBlur}
                           />
                           <label id="fileLabel" htmlFor="photo" className="form-control">
                             انتخاب تصویر مخاطب
                           </label>
+                            {formik.touched.photo && formik.errors.photo ? (<div className="text-danger">{formik.errors.photo}</div>) : null}
                         </div>
                         <div className="mx-2">
                           <input
