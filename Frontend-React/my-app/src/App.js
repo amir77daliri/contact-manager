@@ -17,17 +17,18 @@ import {
 
 // packages :
 import _ from "lodash"
+import {useImmer} from "use-immer";
 
 // styles :
 import './App.css';
 
 
 const App = () => {
-    const [contact, setContact] = useState({})
-    const [contacts, setContacts] = useState([]);
-    const [filteredContacts, setFilteredContacts] = useState([]);
-    const [groups, setGroups] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [contact, setContact] = useImmer({})
+    const [contacts, setContacts] = useImmer([]);
+    const [filteredContacts, setFilteredContacts] = useImmer([]);
+    const [groups, setGroups] = useImmer([]);
+    const [loading, setLoading] = useImmer(false);
 
 
     useEffect(() => {
@@ -54,20 +55,25 @@ const App = () => {
     const deleteContact = async (contactId) => {
         try{
             setLoading(true)
-            const response = await contactService.deleteContact(contactId)
-            if(response) {
-                const {data : contactsData} = await contactService.getAllContacts()
-                setContacts(contactsData)
-                setFilteredContacts(contactsData)
+            const {status} = await contactService.deleteContact(contactId)
+            console.log(status)
+            if(status === 204) {
+                setContacts(draft => {
+                    return draft.filter(c => c.id !== contactId)
+                })
+                setFilteredContacts(draft => {
+                    return draft.filter(c => c.id !== contactId)
+                })
                 setLoading(false)
             }
         } catch (err) {
             setLoading(false)
             console.log(err)
+            alert("مجددا امتحان کنید!")
         }
     }
 
-    // confirm alert UI :\
+    // confirm alert UI :
     const confirmDeleteAlert = (contactId) => {
         confirmAlert({
             customUI: ({onClose}) => {
@@ -91,11 +97,12 @@ const App = () => {
     }
 
     const searchContacts = _.debounce((searchValue) => {
-        const MatchContacts = contacts.filter(contact => {
-            return contact.fullname.toLowerCase().includes(searchValue.toLowerCase())
+        if(!searchValue) return setFilteredContacts(contacts)
+        setFilteredContacts(draft => {
+            // if we use draft here we have a problem in contacts search
+            return contacts.filter(c => c.fullname.toLowerCase().includes(searchValue.toLowerCase()))
         })
-        setFilteredContacts(MatchContacts)
-    }, 1200);
+    }, 1000);
 
     return (
         <ContactContext.Provider value={{
@@ -104,6 +111,7 @@ const App = () => {
             contact,
             setContact,
             contacts,
+            setContacts,
             filteredContacts,
             setFilteredContacts,
             groups,

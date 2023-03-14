@@ -18,7 +18,7 @@ import {Formik, Field, Form, ErrorMessage} from "formik"
 const EditContact = () => {
     const { contactId } = useParams();
     const navigate = useNavigate();
-    const {loading, setLoading, contact, setContact, groups, setFilteredContacts, filteredContacts} = useContext(ContactContext);
+    const {loading, setLoading, contact, setContact, groups, setFilteredContacts, setContacts} = useContext(ContactContext);
 
     useEffect(() => {
         const fetchContact = async () => {
@@ -45,10 +45,14 @@ const EditContact = () => {
             const {status, data} = await contactService.updateContact(contactId, formData)
             if(status === 200) {
                 // update contacts list :
-                let allContacts = [...filteredContacts];
-                const contactIndex = allContacts.findIndex(c => c.id === parseInt(contactId));
-                allContacts[contactIndex] = {...data}
-                setFilteredContacts(allContacts);
+                setFilteredContacts(draft => {
+                    const contactIndex = draft.findIndex(c => c.id === parseInt(contactId));
+                    draft[contactIndex] = {...data}
+                })
+                setContacts(draft => {
+                    const contactIndex = draft.findIndex(c => c.id === parseInt(contactId));
+                    draft[contactIndex] = {...data}
+                })
                 //
                 setContact({});
                 navigate('/contacts');

@@ -18,7 +18,7 @@ import {useFormik} from "formik"
 const AddContact = () => {
     const navigate = useNavigate()
     const [image, setImage] = useState(null)
-    const {filteredContacts, setFilteredContacts, loading, setLoading, groups} = useContext(ContactContext)
+    const {setContacts, setFilteredContacts, loading, setLoading, groups} = useContext(ContactContext)
     const formik = useFormik({
         initialValues: {
             fullname: '',
@@ -49,8 +49,12 @@ const AddContact = () => {
             const {data, status} = await contactService.createNewContact(formData)
 
             if(status === 201) {
-                const allContacts = [...filteredContacts, data]
-                setFilteredContacts(allContacts)
+                setFilteredContacts(draft => {
+                    draft.push(data)
+                })
+                setContacts(draft => {
+                    draft.push(data)
+                })
                 setImage(null)
                 setLoading(false)
                 navigate('/contacts')
