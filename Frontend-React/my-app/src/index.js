@@ -6,7 +6,7 @@ import App from './App';
 
 import './index.css';
 import 'react-confirm-alert/src/react-confirm-alert.css'
-
+import 'react-toastify/dist/ReactToastify.css'
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

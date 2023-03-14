@@ -18,6 +18,7 @@ import {
 // packages :
 import _ from "lodash"
 import {useImmer} from "use-immer";
+import {ToastContainer, toast} from "react-toastify";
 
 // styles :
 import './App.css';
@@ -58,6 +59,7 @@ const App = () => {
             const {status} = await contactService.deleteContact(contactId)
             console.log(status)
             if(status === 204) {
+                toast.error("مخاطب حذف گردید.")
                 setContacts(draft => {
                     return draft.filter(c => c.id !== contactId)
                 })
@@ -119,6 +121,7 @@ const App = () => {
             deleteContact: confirmDeleteAlert
         }}>
             <div className="App">
+                <ToastContainer rtl={true} position="top-right" theme="colored"/>
                 <Navbar />
                 <Routes>
                     <Route path="/" element={<Navigate to="/contacts" />} />

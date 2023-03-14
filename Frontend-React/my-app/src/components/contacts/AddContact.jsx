@@ -13,7 +13,7 @@ import formUpload from "../../utils/formUpload"
 import {creatContactSchema} from "../../validations/contactValidation";
 // packages :
 import {useFormik} from "formik"
-
+import {toast} from "react-toastify";
 
 const AddContact = () => {
     const navigate = useNavigate()
@@ -49,6 +49,7 @@ const AddContact = () => {
             const {data, status} = await contactService.createNewContact(formData)
 
             if(status === 201) {
+                toast.success("مخاطب با موفقیت ساخته شد")
                 setFilteredContacts(draft => {
                     draft.push(data)
                 })

@@ -11,8 +11,10 @@ import { COMMENT, ORANGE, PURPLE } from "../../utils/colors";
 import contactService from "../../services/myAppServices";
 import formUpload from "../../utils/formUpload";
 import {BaseSchema} from "../../validations/contactValidation";
+
 // packages :
 import {Formik, Field, Form, ErrorMessage} from "formik"
+import {toast} from "react-toastify";
 
 
 const EditContact = () => {
@@ -44,6 +46,7 @@ const EditContact = () => {
             setLoading(true)
             const {status, data} = await contactService.updateContact(contactId, formData)
             if(status === 200) {
+                toast.info("مخاطب با موفقیت ویرایش گردید.")
                 // update contacts list :
                 setFilteredContacts(draft => {
                     const contactIndex = draft.findIndex(c => c.id === parseInt(contactId));
